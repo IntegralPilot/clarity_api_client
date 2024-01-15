@@ -61,6 +61,16 @@ void main() {
       throw Exception("Invalid username recieved!");
     }
   });
-  });
+    });
+  group("Get User Status - ", () {
+    test("Recieve the correct user status when sending a valid request", () async {
+      final TokenFactory tokenFactory = DebugTokenFactory(userUid: "KWDrzf0BNIaHJidKU7PsXGMtvXz2");
+      final client = ClarityAPIClient(tokenFactory: tokenFactory, endpoint: "localhost:3000");
+      final status = await client.getUserStatus();
+      if (status != "L.UPLOADER") {
+        throw Exception("Invalid user status recieved!");
+      }
+    });
+    });
 }
 
