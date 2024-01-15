@@ -120,12 +120,12 @@ class ClarityAPIClient {
   } 
 
   /// Get the name of the lab that the currently signed-in user belongs to.
-  /// Will throw errors if requirements are not met or if the 
+  /// Will throw errors if requirements are not met or if the server is down.
   /// Throws non-specific errors if using the production instance of ClarityAPI.
   /// 
   /// # Requirements
   /// The user *must* be a LabManager, LabUploader or LabPending.
-  /// A [TokenFactory] *must* be provided.
+  /// A [TokenFactory] *must* be be provided to this class.
   Future<String> getLabName() async {
     final userId = tokenFactory!.getUid();
     final usid = await tokenFactory!.generateUniqueUsid();
@@ -141,5 +141,30 @@ class ClarityAPIClient {
       throw new Exception(data["error"]);
     }
     return data["labName"];
+  }
+
+  /// Get the username of a given user.
+  /// Will throw errors if requirements are not met or if the server is down.
+  /// Throws non-specific errors if using the production instance of ClarityAPI.
+  /// 
+  /// # Requirements
+  /// The user *must* be a LabManager.
+  /// A [TokenFactory] *must* be provided to this class.
+  Future<String> getUsername(String usernameOf) async {
+    final userId = tokenFactory!.getUid();
+    final usid = await tokenFactory!.generateUniqueUsid();
+    final formData = FormData.fromMap({
+      "cgA": "Please don't spoof requests to ClarityAPI. Really, it's way uncool.",
+      "uid": userId,
+      "usid": usid,
+      "ruid": usernameOf
+    });
+    final endpointAddress = getEndpointBaseAddress();
+    final response = await dio.post("$endpointAddress/api/userNameResolver", data: formData);
+    final data = response.data;
+    if (response.statusCode != 200) {
+      throw new Exception(data["error"]);
+    }
+    return data["username"];
   }
 }

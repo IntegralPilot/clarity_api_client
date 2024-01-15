@@ -38,4 +38,29 @@ void main() {
       }
     });
   });
+  group("Get Username - ", () {
+    test("Ensure a non-manager cannot use this API", () {
+      expect(() async {
+        final TokenFactory tokenFactory = DebugTokenFactory(userUid: "KWDrzf0BNIaHJidKU7PsXGMtvXz2");
+        final client = ClarityAPIClient(tokenFactory: tokenFactory, endpoint: "localhost:3000");
+        await client.getUsername("KWDrzf0BNIaHJidKU7PsXGMtvXz2");
+      }, throwsA(isA<Exception>()));
+    });
+  test("Ensure that this API cannot be used against a non-tech", () {
+    expect(() async {
+      final TokenFactory tokenFactory = DebugTokenFactory(userUid: "SJI1aJvXeWZYNvDyjPfP6LkhT3D3");
+      final client = ClarityAPIClient(tokenFactory: tokenFactory, endpoint: "localhost:3000");
+      await client.getUsername("MEswuQpkqZMKm5fUuvlPkzqlLex1");
+    }, throwsA(isA<Exception>()));
+  });
+  test("Recieve the correct username when sending a valid request", () async {
+    final TokenFactory tokenFactory = DebugTokenFactory(userUid: "SJI1aJvXeWZYNvDyjPfP6LkhT3D3");
+    final client = ClarityAPIClient(tokenFactory: tokenFactory, endpoint: "localhost:3000");
+    final username = await client.getUsername("KWDrzf0BNIaHJidKU7PsXGMtvXz2");
+    if (username != "DemoUploader") {
+      throw Exception("Invalid username recieved!");
+    }
+  });
+  });
 }
+
