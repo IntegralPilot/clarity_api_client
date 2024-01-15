@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   dio: ^5.4.0
+  uuid: ^4.3.3
 
 dev_dependencies:
   test: ^1.24.9

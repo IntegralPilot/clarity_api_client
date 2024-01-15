@@ -17,7 +17,7 @@ The offical, easy-to-use client for ClarityScreen's ClarityAPI, supporting power
 
 Used in the offical ClarityScreen App.
 
-*Note: ClarityAPI isn't accepting external users yet, but we'll be expaning soon. This is mainly an internally-used project for our offical app as of now.*
+*Note: ClarityAPI isn't accepting external users yet, but we'll be expanding soon. This is mainly an internally-used project for our offical app as of now.*
 
 ## Features
 
