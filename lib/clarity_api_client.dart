@@ -239,4 +239,29 @@ class ClarityAPIClient {
     }
     return data["testData"];
   }
+
+  /// Submits an access request to the given lab, at the given access level.
+  /// Will throw errors if requirements are not met or if the server is down.
+  /// Throws non-specific errors if using the production instance of ClarityAPI.
+  /// 
+  /// # Requirements
+  /// A [TokenFactory] *must* be provided to this class.
+  /// The current must *must* be of type LabNoRequest.
+  Future<void> submitAccessRequest(String labName, String accessLevel) async {
+    final userId = tokenFactory!.getUid();
+    final usid = await tokenFactory!.generateUniqueUsid();
+    final formData = FormData.fromMap({
+      "cgA": "Please don't spoof requests to ClarityAPI. Really, it's way uncool.",
+      "uid": userId,
+      "usid": usid,
+      "rlid": labName,
+      "rA": accessLevel
+    });
+    final endpointAddress = getEndpointBaseAddress();
+    final response = await dio.post("$endpointAddress/api/labAccessRequestSubmitter", data: formData);
+    final data = response.data;
+    if (response.statusCode != 200) {
+      throw new Exception(data["error"]);
+    }
+  }
 }

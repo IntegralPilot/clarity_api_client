@@ -123,5 +123,26 @@ void main() {
       }
     });
 });
+group("Submit Access Request -", () {
+  test("Successfully submit the access request when sending a valid request", () async {
+    final TokenFactory tokenFactory = DebugTokenFactory();
+    final client = ClarityAPIClient(tokenFactory: tokenFactory, endpoint: "localhost:3000");
+    await client.submitAccessRequest("1052", "_M__");
+  });
+  test("Recieve an error when not a LabPending", () {
+    expect(() async {
+      final TokenFactory tokenFactory = DebugTokenFactory(userUid: "KWDrzf0BNIaHJidKU7PsXGMtvXz2");
+      final client = ClarityAPIClient(tokenFactory: tokenFactory, endpoint: "localhost:3000");
+      await client.submitAccessRequest("1052", "_M__");
+    }, throwsA(isA<Exception>()));
+  });
+  test("Recieve an error when using an invalid accessType", () {
+    expect(() async {
+      final TokenFactory tokenFactory = DebugTokenFactory();
+      final client = ClarityAPIClient(tokenFactory: tokenFactory, endpoint: "localhost:3000");
+      await client.submitAccessRequest("1052", "INVALID");
+    }, throwsA(isA<Exception>()));
+  });
+});
 }
 
