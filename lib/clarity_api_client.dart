@@ -190,4 +190,28 @@ class ClarityAPIClient {
     }
     return data["userType"];
   }
+
+  /// Confirms the exsistence of a given test.
+  /// Will throw errors if requirements are not met or if the server is down.
+  /// Throws non-specific errors if using the production instance of ClarityAPI.
+  /// 
+  /// # Requirements
+  /// A [TokenFactory] *must* be provided to this class.
+  Future<bool> testExists(String testId) async {
+    final userId = tokenFactory!.getUid();
+    final usid = await tokenFactory!.generateUniqueUsid();
+    final formData = FormData.fromMap({
+      "cgA": "Please don't spoof requests to ClarityAPI. Really, it's way uncool.",
+      "uid": userId,
+      "usid": usid,
+      "rtid": testId
+    });
+    final endpointAddress = getEndpointBaseAddress();
+    final response = await dio.post("$endpointAddress/api/testExistenceConfirmer", data: formData);
+    final data = response.data;
+    if (response.statusCode != 200) {
+      throw new Exception(data["error"]);
+    }
+    return data["exists"];
+  }
 }

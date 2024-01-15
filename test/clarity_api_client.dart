@@ -3,6 +3,7 @@ import 'package:test/test.dart';
 import 'package:clarity_api_client/clarity_api_client.dart';
 
 // Before running these tests, please start a local debug-mode server of ClarityAPI on localhost:3000
+// Ensure your local clone is up to date with origin/main
 
 void main() {
   group("Heartbeat -", () {
@@ -72,5 +73,16 @@ void main() {
       }
     });
     });
+  group("Confirm Test Existence -", () {
+    test("Recieve the correct test existence when sending a valid request", () async {
+      final TokenFactory tokenFactory = DebugTokenFactory(userUid: "KWDrzf0BNIaHJidKU7PsXGMtvXz2");
+      final client = ClarityAPIClient(tokenFactory: tokenFactory, endpoint: "localhost:3000");
+      final exists = await client.testExists("3451");
+      if (!exists) {
+        throw Exception("Invalid test existence recieved!");
+      }
+    });
+  });
+  
 }
 
