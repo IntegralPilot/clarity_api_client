@@ -284,4 +284,28 @@ class ClarityAPIClient {
       throw new Exception(data["error"]);
     }
   }
+
+  /// Resolves the current user's lab name.
+  /// Will throw errors if requirements are not met or if the server is down.
+  /// Throws non-specific errors if using the production instance of ClarityAPI.
+  /// 
+  /// # Requirements
+  /// A [TokenFactory] *must* be provided to this class.
+  /// The current must *must* be of type LabManager or LabUploader.
+  Future<String> resolveLabName() async {
+    final userId = tokenFactory!.getUid();
+    final usid = await tokenFactory!.generateUniqueUsid();
+    final formData = FormData.fromMap({
+      "cgA": "Please don't spoof requests to ClarityAPI. Really, it's way uncool.",
+      "uid": userId,
+      "usid": usid
+    });
+    final endpointAddress = getEndpointBaseAddress();
+    final response = await dio.post("$endpointAddress/api/enrolledLabNameResolver", data: formData);
+    final data = response.data;
+    if (response.statusCode != 200) {
+      throw new Exception(data["error"]);
+    }
+    return data["labName"];
+  }
 }

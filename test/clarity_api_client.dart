@@ -176,5 +176,22 @@ group("Submit Access Request -", () {
       }
     });
   });
+  group("Resolve self lab name - ", () {
+    test("Confirm that the lab name is resolved correctly", () async {
+      final TokenFactory tokenFactory = DebugTokenFactory(userUid: "KWDrzf0BNIaHJidKU7PsXGMtvXz2");
+      final client = ClarityAPIClient(tokenFactory: tokenFactory, endpoint: "localhost:3000");
+      final labName = await client.resolveLabName();
+      if (labName != "Clarity Testing Lab") {
+        throw Exception("Invalid lab name recieved!");
+      }
+    });
+    test("Confirm that a non-lab-tech cannot resolve the lab name", () {
+      expect(() async {
+        final TokenFactory tokenFactory = DebugTokenFactory(userUid: "MEswuQpkqZMKm5fUuvlPkzqlLex1");
+        final client = ClarityAPIClient(tokenFactory: tokenFactory, endpoint: "localhost:3000");
+        await client.resolveLabName();
+      }, throwsA(isA<Exception>()));
+    });
+  });
 }
 
