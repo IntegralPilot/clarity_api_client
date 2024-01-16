@@ -122,6 +122,28 @@ void main() {
         throw Exception(test);
       }
     });
+    test("Recieve the correct test when using the bypass", () async {
+      final TokenFactory tokenFactory = DebugTokenFactory(userUid: "KWDrzf0BNIaHJidKU7PsXGMtvXz2");
+      final client = ClarityAPIClient(tokenFactory: tokenFactory, endpoint: "localhost:3000");
+      final test = await client.fetchTest("3451", "JUST_FETCH_TEST_METADATA___");
+      if (!areMapsEqual(test, {
+          "dob": 1702270800000,
+          "patientName": "IntegralPilot",
+          "prescriberName": "Dr Integral",
+      })) {
+        throw Exception(test);
+      }
+    });
+    test("Ensure DOB is not revaled to a non-lab-tech using the bypass.", () async {
+      final TokenFactory tokenFactory = DebugTokenFactory(userUid: "MEswuQpkqZMKm5fUuvlPkzqlLex1");
+      final client = ClarityAPIClient(tokenFactory: tokenFactory, endpoint: "localhost:3000");
+      final test = await client.fetchTest("3451", "JUST_FETCH_TEST_METADATA___");
+      if (!areMapsEqual(test, {
+          "patientName": "IntegralPilot",
+      })) {
+        throw Exception(test);
+      }
+    });
 });
 group("Submit Access Request -", () {
   test("Successfully submit the access request when sending a valid request", () async {
