@@ -215,6 +215,26 @@ class ClarityAPIClient {
     return data["exists"];
   }
 
+  /// Confirms the exsistence of a given lab.
+  /// Will throw errors if requirements are not met or if the server is down.
+  /// Throws non-specific errors if using the production instance of ClarityAPI.
+  /// 
+  /// # Requirements
+  /// None!
+  Future<bool> labExists(String labId) async {
+    final formData = FormData.fromMap({
+      "cgA": "Please don't spoof requests to ClarityAPI. Really, it's way uncool.",
+      "rlid": labId
+    });
+    final endpointAddress = getEndpointBaseAddress();
+    final response = await dio.post("$endpointAddress/api/labExistenceConfirmer", data: formData);
+    final data = response.data;
+    if (response.statusCode != 200) {
+      throw new Exception(data["error"]);
+    }
+    return data["exists"];
+  }
+
   /// Fetches a given test.
   /// Will throw errors if requirements are not met or if the server is down.
   /// Throws non-specific errors if using the production instance of ClarityAPI.

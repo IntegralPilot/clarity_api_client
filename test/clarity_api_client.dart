@@ -166,5 +166,15 @@ group("Submit Access Request -", () {
     }, throwsA(isA<Exception>()));
   });
 });
+  group("Confirm Lab Existence -", () {
+    test("Recieve the correct Lab existence when sending a valid request", () async {
+      final TokenFactory tokenFactory = DebugTokenFactory(userUid: "KWDrzf0BNIaHJidKU7PsXGMtvXz2");
+      final client = ClarityAPIClient(tokenFactory: tokenFactory, endpoint: "localhost:3000");
+      final exists = await client.labExists("1052");
+      if (!exists) {
+        throw Exception("Invalid lab existence recieved!");
+      }
+    });
+  });
 }
 
